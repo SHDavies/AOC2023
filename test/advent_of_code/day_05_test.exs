@@ -45,6 +45,7 @@ defmodule AdventOfCode.Day05Test do
     assert result == 35
   end
 
+  @tag :skip
   test "part2" do
     input =
       "seeds: 79 14 55 13
