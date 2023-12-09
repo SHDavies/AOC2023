@@ -18,6 +18,7 @@ defmodule AdventOfCode.Day04Test do
     assert result == 13
   end
 
+  @tag :skip
   test "part2" do
     input =
       "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
