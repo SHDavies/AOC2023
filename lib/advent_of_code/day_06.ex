@@ -31,6 +31,26 @@ defmodule AdventOfCode.Day06 do
     |> Enum.map(&String.to_integer/1)
   end
 
-  def part2(_args) do
+  def part2(input) do
+    input
+    |> parse_input_2()
+    |> Enum.map(&get_ways/1)
+    |> Enum.map(&length/1)
+    |> Enum.reduce(fn x, acc -> x * acc end)
+  end
+
+  def parse_input_2(input) do
+    %{"raw_times" => raw_times, "raw_distances" => raw_distances} =
+      Regex.named_captures(~r/Time:(?<raw_times>.+)\n\s*Distance:(?<raw_distances>.+)/, input)
+
+    {times, distances} = {[parse_raw_2(raw_times)], [parse_raw_2(raw_distances)]}
+
+    List.zip([times, distances])
+  end
+
+  def parse_raw_2(raw) do
+    raw
+    |> String.replace(~r/\s/, "")
+    |> String.to_integer()
   end
 end
