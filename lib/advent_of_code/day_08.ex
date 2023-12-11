@@ -5,25 +5,25 @@ defmodule AdventOfCode.Day08 do
 
     input
     |> parse_input()
-    |> follow_directions({0, :AAA})
+    |> follow_directions({0, "AAA"}, fn current -> current == "AAA" end)
   end
 
-  def follow_directions({directions, grid}, {current_steps, start}) do
+  def follow_directions({directions, grid}, {current_steps, start}, finished?) do
     directions
     |> Enum.reduce({current_steps, start}, fn direction, {steps, current} ->
-      case current do
-        :ZZZ ->
-          {steps, current}
-
-        _ ->
-          grid
-          |> Map.get(current)
-          |> then(fn {l, r} -> if direction == :L, do: l, else: r end)
-          |> then(fn new -> {steps + 1, new} end)
+      if finished?.(current) do
+        {steps, current}
+      else
+        grid
+        |> Map.get(current)
+        |> then(fn {l, r} -> if direction == :L, do: l, else: r end)
+        |> then(fn new -> {steps + 1, new} end)
       end
     end)
     |> then(fn {steps, finish} ->
-      if finish == :ZZZ, do: steps, else: follow_directions({directions, grid}, {steps, finish})
+      if finished?.(finish),
+        do: steps,
+        else: follow_directions({directions, grid}, {steps, finish}, finished?)
     end)
   end
 
@@ -52,14 +52,32 @@ defmodule AdventOfCode.Day08 do
     line
     |> then(fn l ->
       Regex.named_captures(
-        ~r/^(?<s>[A-Z]{3})\s=\s\((?<l>[A-Z]{3}),\s(?<r>[A-Z]{3})\)/,
+        ~r/^(?<s>\w{3})\s=\s\((?<l>\w{3}),\s(?<r>\w{3})\)/,
         l
       )
     end)
-    |> Enum.map(fn {k, v} -> {String.to_atom(k), String.to_atom(v)} end)
+    |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
     |> then(fn l -> {Keyword.get(l, :s), Keyword.get(l, :l), Keyword.get(l, :r)} end)
   end
 
-  def part2(_args) do
+  def part2(input) do
+    IO.puts("")
+    IO.puts("")
+
+    input
+    |> parse_input()
+    |> then(fn {d, g} -> {{d, g}, find_starts(g)} end)
+    |> then(fn {{d, g}, starts} ->
+      Enum.map(starts, fn start ->
+        follow_directions({d, g}, {0, start}, fn <<_, _, l>> -> l == ?Z end)
+      end)
+    end)
+    |> Enum.reduce(1, fn a, b -> abs(div(a * b, Integer.gcd(a, b))) end)
+  end
+
+  def find_starts(grid) do
+    grid
+    |> Map.keys()
+    |> Enum.filter(fn coord -> String.at(coord, -1) == "A" end)
   end
 end
