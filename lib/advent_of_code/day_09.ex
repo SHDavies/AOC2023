@@ -5,17 +5,17 @@ defmodule AdventOfCode.Day09 do
 
     input
     |> parse_input()
-    |> Enum.map(fn row -> find_next(row, []) end)
+    |> Enum.map(fn row -> find_next(row, [], &finish_sequence_forward/2) end)
     |> Enum.sum()
   end
 
-  def find_next(sequence, previous) do
+  def find_next(sequence, previous, finish) do
     if Enum.all?(sequence, &(&1 == 0)) do
-      finish_sequence(previous, 0)
+      finish.(previous, 0)
     else
       sequence
       |> make_next_row()
-      |> then(fn row -> find_next(row, [sequence | previous]) end)
+      |> then(fn row -> find_next(row, [sequence | previous], finish) end)
     end
   end
 
@@ -25,7 +25,7 @@ defmodule AdventOfCode.Day09 do
     |> Enum.map(fn [l, r] -> r - l end)
   end
 
-  def finish_sequence([current | rest], to_add) do
+  def finish_sequence_forward([current | rest], to_add) do
     if Enum.empty?(rest) do
       current
       |> Enum.at(-1)
@@ -34,7 +34,7 @@ defmodule AdventOfCode.Day09 do
       current
       |> Enum.at(-1)
       |> then(fn x -> x + to_add end)
-      |> then(fn x -> finish_sequence(rest, x) end)
+      |> then(fn x -> finish_sequence_forward(rest, x) end)
     end
   end
 
@@ -48,6 +48,27 @@ defmodule AdventOfCode.Day09 do
     end)
   end
 
-  def part2(_args) do
+  def part2(input) do
+    IO.puts("")
+    IO.puts("")
+
+    input
+    |> parse_input()
+    |> Enum.map(fn row -> find_next(row, [], &finish_sequence_backward/2) end)
+    |> Enum.sum()
+  end
+
+  @spec finish_sequence_backward(nonempty_maybe_improper_list(), any()) :: any()
+  def finish_sequence_backward([current | rest], to_subtract) do
+    if Enum.empty?(rest) do
+      current
+      |> Enum.at(0)
+      |> then(fn x -> x - to_subtract end)
+    else
+      current
+      |> Enum.at(0)
+      |> then(fn x -> x - to_subtract end)
+      |> then(fn x -> finish_sequence_backward(rest, x) end)
+    end
   end
 end
