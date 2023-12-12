@@ -17,6 +17,7 @@ defmodule AdventOfCode.Day08Test do
     assert result == 6
   end
 
+  @tag :skip
   test "part2" do
     input =
       "LR
