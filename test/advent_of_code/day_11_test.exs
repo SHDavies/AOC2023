@@ -5,17 +5,39 @@ defmodule AdventOfCode.Day11Test do
 
   @tag :skip
   test "part1" do
-    input = nil
+    input =
+      "...#......
+      .......#..
+      #.........
+      ..........
+      ......#...
+      .#........
+      .........#
+      ..........
+      .......#..
+      #...#....."
+
     result = part1(input)
 
-    assert result
+    assert result == 374
   end
 
   @tag :skip
   test "part2" do
-    input = nil
+    input =
+      "...#......
+      .......#..
+      #.........
+      ..........
+      ......#...
+      .#........
+      .........#
+      ..........
+      .......#..
+      #...#....."
+
     result = part2(input)
 
-    assert result
+    assert result == 1030
   end
 end
