@@ -5,17 +5,38 @@ defmodule AdventOfCode.Day16Test do
 
   @tag :skip
   test "part1" do
-    input = nil
+    input =
+      ~S(.|...\....
+      |.-.\.....
+      .....|-...
+      ........|.
+      ..........
+      .........\
+      ..../.\\..
+      .-.-/..|..
+      .|....-|.\
+      ..//.|....)
+
     result = part1(input)
 
-    assert result
+    assert result == 46
   end
 
-  @tag :skip
   test "part2" do
-    input = nil
+    input =
+      ~S(.|...\....
+      |.-.\.....
+      .....|-...
+      ........|.
+      ..........
+      .........\
+      ..../.\\..
+      .-.-/..|..
+      .|....-|.\
+      ..//.|....)
+
     result = part2(input)
 
-    assert result
+    assert result == 51
   end
 end
